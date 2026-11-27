@@ -95,7 +95,6 @@ body.show .cap{left:28px;right:28px;bottom:24px}
 <section class="panel" aria-label="조작">
   <div>
     <h1>338호 3D 전파지도</h1>
-    <p class="sub">338호 라이다 스캔에 자리별 통신 품질을 색으로 입힘. 측정점을 누르면 그 자리의 CIR과 전파 경로가 뜸.</p>
   </div>
   <div class="grp"><h2>지표</h2><div class="seg v" id="layers" role="group" aria-label="지표"></div></div>
   <div class="grp"><h2 id="lgT"></h2><div class="bar" id="lgB"></div><div class="ends"><span id="lgL"></span><span id="lgH"></span></div><p class="lgx" id="lgX"></p></div>
@@ -106,7 +105,7 @@ body.show .cap{left:28px;right:28px;bottom:24px}
       <label class="tg"><input type="checkbox" id="tFurn" checked><span>책상·의자</span></label>
       <label class="tg"><input type="checkbox" id="tWall" checked><span>벽</span></label>
       <label class="tg"><input type="checkbox" id="tCeil"><span>천장</span></label>
-      <label class="tg"><input type="checkbox" id="tPts" checked><span>측정점</span></label>
+      <label class="tg"><input type="checkbox" id="tPts" checked><span>예측점</span></label>
     </div>
   </div>
   <div class="grp"><h2 id="spH"></h2><div class="spots" id="spots"></div></div>
@@ -133,9 +132,9 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const LAYERS=[
   {k:'tau',name:'반사파 길이 τrms',unit:'ns',good:'lo',desc:'거리로는 예측 안 됨',bad:'길게 퍼짐',gd:'짧게 끝남',wG:'짧음',wB:'김',head:'τrms 가장 짧은 곳 · 긴 곳',
-   ex:(lo,hi)=>`τrms(RMS 지연 확산)는 반사파들이 시간상으로 얼마나 퍼져서 도착하는지를 나타냄. 짧을수록 반사파가 빨리 잦아들어 심볼 간 간섭이 적음. 코히어런스 대역폭 ≈ 1/(5·τrms): ${hi.toFixed(1)} ns → 약 ${(1e3/(5*hi)).toFixed(0)} MHz, ${lo.toFixed(1)} ns → 약 ${(1e3/(5*lo)).toFixed(0)} MHz.`},
+   ex:(lo,hi)=>`τrms(RMS 지연 확산)는 반사파들이 시간상으로 얼마나 퍼져서 도착하는지를 나타냄. 짧을수록 반사파가 빨리 잦아들어 심볼 간 간섭이 적음.`},
   {k:'cir',name:'수신 세기 (CIR)',unit:'dB',good:'hi',desc:'RX에 도착하는 신호 세기, 클수록 잘 터짐',bad:'약함',gd:'강함',wG:'셈',wB:'약함',head:'수신 세기 가장 센 곳 · 약한 곳',
-   ex:(lo,hi)=>`RX가 받은 신호 에너지 (CIR 모든 탭의 합, dB). 높을수록 수신 신호가 셈. 10 dB 높으면 받은 에너지 10배. 이 방 안에서 차이는 ${(hi-lo).toFixed(1)} dB.`}];
+   ex:(lo,hi)=>`RX가 받은 신호 에너지 (CIR 모든 탭의 합, dB). 높을수록 수신 신호가 셈.`}];
 const STOPS=[[0,[255,31,61]],[.25,[255,122,0]],[.5,[255,212,0]],[.75,[61,220,74]],[1,[0,224,184]]];
 const cmap=t=>{t=Math.max(0,Math.min(1,t));for(let i=1;i<STOPS.length;i++)if(t<=STOPS[i][0]){const[a,ca]=STOPS[i-1],[b,cb]=STOPS[i],u=(t-a)/(b-a);return ca.map((c,j)=>c+(cb[j]-c)*u)}return STOPS[4][1]};
 const grad='linear-gradient(90deg,'+STOPS.map(([s,c])=>`rgb(${c}) ${s*100}%`).join(',')+')';
